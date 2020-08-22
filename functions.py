@@ -1,5 +1,7 @@
 from gpiozero import LED
+from serial import Serial
 import time
+from sys import platform
         
 class pump_control:
     """This class is used to manage the AC/DC relay made by Digital Loggers.
@@ -60,21 +62,28 @@ def read_sensor_data(expected_sensors, timeout):
        The Arduino receives data from a number of sensors, including
        temerature, humidity, water level, and water flow rate.
        Future additions will likely include PH and EC"""
-    ##Setup serial
-    port = "COM3"
-    baudrate = 9600
+
+    """To find port
+        1. Before plugging in Arduino, run command: sudo ls /dev/tty*
+        2. Plugin Arduino and run command above.
+        3. Identify which tty was added, write that one as the port below"""
     
-    ##Read serial
+    if 'linux' in platform:
+        port = '/dev/ttyACM0'
+    else:
+        ##For when I am testing arduino on Windows
+        port = "COM3"
+    
+    baudrate = 9600
     
     with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
         Port.flushInput()    
         line = Port.readline().decode().strip()
         start = time.time()
-        while line == "" and time.time() - start < timeout:
+        while ":" not in line and time.time() - start < timeout:
             line = Port.readline().decode().strip()
         Port.close()
         
-    ##Create dictioary of expected sensors
     sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
     
     """Write sensor values to sensor dictionary.
