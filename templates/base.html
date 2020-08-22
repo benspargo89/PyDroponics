@@ -1,0 +1,45 @@
+<!doctype html>
+<title>JavaScript Example</title>
+<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/normalize.css">
+<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/sakura-earthly.css">
+<style>
+  ul { margin: 0; padding: 0; display: flex; list-style-type: none; }
+  li > * { padding: 1em; }
+  li.active > a { color: #5e5e5e; border-bottom: 2px solid #4a4a4a; }
+  form { display: flex; }
+  label > input { width: 3em; }
+  form > * { padding-right: 1em; }
+  #result { font-weight: bold; }
+</style>
+
+<hr>
+<p><a href="https://jquery.com/">jQuery</a> is a popular library that
+  adds cross browser APIs for common tasks. However, it requires loading
+  an extra library.</p>
+<hr>
+<span>Temperature: <span id="temperature"></span></span>
+<br></br>
+<span>Humidity: <span id="humidty"></span></span>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+
+    function retrieve_data() {
+      $.ajax({
+        method: 'GET',
+        url: {{ url_for('sensor_data')|tojson }},
+        _data: $(this).serialize()
+      }).done(publish_data_to_html);
+    }
+
+    function publish_data_to_html(_data) {
+      $('#temperature').text(_data.temperature);
+      $('#humidty').text(_data.humidity);
+    }
+
+
+$(document).ready(function(){
+ setInterval(retrieve_data,3000);
+});
+
+  </script>
