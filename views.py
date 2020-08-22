@@ -4,6 +4,7 @@ from flask import request
 from flask import Flask
 from random import randint
 from serial import Serial
+from functions import *
 
 app = Flask(__name__)
 
