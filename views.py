@@ -14,5 +14,7 @@ def index():
 
 @app.route("/sensor_data")
 def sensor_data():
-    sensor_data = read_sensor_data()
+    expected_sensors = ['Temperature', 'Humidity']
+    timeout = 10
+    sensor_data = read_sensor_data(expected_sensors, timeout)
     return jsonify(temperature=sensor_data['Temperature'], humidity=sensor_data['Humidity'])
