@@ -9,7 +9,7 @@ class pump_control:
        Initializing to the last state is used so that if the RPI reboots for some reason,
        it wil continue to work as it was before the reboot."""
     
-    def __init__(self, pin, start_state_on=None):
+    def __init__(self, pin, start_state=None):
         self.switch = LED(pin)
         if start_state:
             if start_state == 'on':
@@ -48,10 +48,10 @@ class pump_control:
     def init_state(self):
         ls = self.read_state()
         if ls == 'on':
-            self.pump_on()
+            self.on()
             self.pump_state = 'on'
         else:
-            self.switch.off()
+            self.off()
             self.pump_state = 'off'
             
  
@@ -100,19 +100,13 @@ def read_sensor_data(expected_sensors, timeout):
  
 
 
+##to do
 
-# def read_sensor_data():
-#     """This function reads serial data from an Arduino Uno.
-#        The Arduino receives data from a number of sensors, including
-#        temerature, humidity, water level, and water flow rate.
-#        Future additions will likely include PH and EC"""
-# 
-#     port = "COM3"
-#     baudrate = 9600
-#     with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
-#         Port.flushInput()    
-#         line = Port.readline().decode().strip()
-#         while line == "":
-#             line = Port.readline().decode().strip()
-#         Port.close()
-#     return {item.split(':')[0]:item.split(':')[1] for item in line.split()}
+def send_text(message):
+    pass
+
+def log_data(data):
+    pass
+
+def monitor_pump():
+    pass

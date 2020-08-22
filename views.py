@@ -7,7 +7,7 @@ from serial import Serial
 from functions import *
 
 app = Flask(__name__)
-
+pump = pump_control(4)
 
 @app.route("/")
 def index():
@@ -19,3 +19,17 @@ def sensor_data():
     timeout = 10
     sensor_data = read_sensor_data(expected_sensors, timeout)
     return jsonify(temperature=sensor_data['Temperature'], humidity=sensor_data['Humidity'])
+
+
+##Functions below have not been implemented in HTML
+
+@app.route("/pump_state")
+def pump_state():
+    current_state = pump.pump_state
+    return jsonify(pump_state=pump_state)
+
+@app.route("/toggle_pump")
+def toggle_pump():
+    pump.toggle()
+    current_state = pump.pump_state
+    return jsonify(pump_state=pump_state)
