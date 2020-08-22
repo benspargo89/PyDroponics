@@ -1,0 +1,13 @@
+Help on module functions:
+
+NNAAMMEE
+    functions
+
+FFIILLEE
+    /home/pi/Documents/PyDroponics/functions.py
+
+FFUUNNCCTTIIOONNSS
+    rreeaadd__sseennssoorr__ddaattaa()
+    
+    sseett__ssttaattee(state, pin)
+
