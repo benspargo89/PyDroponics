@@ -1,27 +1,19 @@
 <!doctype html>
-<title>JavaScript Example</title>
+<title>Hydroponic Dashboard</title>
 <link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/normalize.css">
 <link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/sakura-earthly.css">
-<style>
-  ul { margin: 0; padding: 0; display: flex; list-style-type: none; }
-  li > * { padding: 1em; }
-  li.active > a { color: #5e5e5e; border-bottom: 2px solid #4a4a4a; }
-  form { display: flex; }
-  label > input { width: 3em; }
-  form > * { padding-right: 1em; }
-  #result { font-weight: bold; }
-</style>
 
 <hr>
-<p><a href="https://jquery.com/">jQuery</a> is a popular library that
-  adds cross browser APIs for common tasks. However, it requires loading
-  an extra library.</p>
+<p>PyDroponics</p>
 <hr>
 <span>Temperature: <span id="temperature"></span></span>
 <br></br>
 <span>Humidity: <span id="humidty"></span></span>
+<br></br>
+<button type="button" id="toggle" <span>Pump Status: <span id="pump_state"></span></span></button>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script>
 
     function retrieve_data() {
@@ -36,6 +28,22 @@
       $('#temperature').text(_data.temperature);
       $('#humidty').text(_data.humidity);
     }
+
+
+    function pump_click() {
+      $.ajax({
+        method: 'GET',
+        url: {{ url_for('toggle_pump')|tojson }},
+        data: $(this).serialize()
+      }).done(pump_status);
+    }
+
+    function pump_status(data) {
+      $('#pump_state').text(data.pump_state);
+    }
+
+    $('#toggle').click(pump_click);
+
 
 
 $(document).ready(function(){
