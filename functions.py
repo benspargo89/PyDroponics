@@ -110,3 +110,21 @@ def log_data(data):
 
 def monitor_pump():
     pass
+
+
+# if 'linux' in platform:
+#     port = '/dev/ttyACM0'
+# else:
+#     ##For when I am testing arduino on Windows
+#     port = "COM3"
+# 
+# baudrate = 9600
+# 
+# with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
+#     Port.flushInput()    
+#     line = Port.readline().decode().strip()
+#     start = time.time()
+#     while ":" not in line and time.time() - start < 10:
+#         line = Port.readline().decode().strip()
+#     Port.close()
+#     print(line)

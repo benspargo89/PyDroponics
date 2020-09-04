@@ -38,7 +38,7 @@
       var graphs = {{plot | safe}};
       var layout = {width: 325,
                     height: 210,
-                    autosize: false};
+                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
       Plotly.plot('bargraph',graphs,layout);
     </script>
   </div>
@@ -46,8 +46,9 @@
     <script>
       var graphs2 = {{plot2 | safe}};
       var layout = {width: 325,
-                    height: 210};
-      Plotly.plot('bargraph',graphs2,layout);
+                    height: 210,
+                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
+      Plotly.plot('bargraph2',graphs2,layout);
     </script>
 
 
@@ -84,11 +85,13 @@
       $('#graphs').text(_data.chart);
       console.log(_data.chart);
       var d = JSON.parse(_data.chart);
+      var e = JSON.parse(_data.charte);
       console.log(d)
-      var layout = {width: 330,
-              height: 210,
-              autosize: true};
+      var layout = {width: 325,
+                    height: 210,
+                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
       Plotly.newPlot('bargraph',  d, layout);
+      Plotly.newPlot('bargraph',  e, layout);
 
     }
 
