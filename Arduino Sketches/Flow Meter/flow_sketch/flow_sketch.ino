@@ -68,5 +68,5 @@ void loop()                     // run over and over again
   pulses = 0;
   flowrate = 0;
  
-  delay(1000);
+  delay(5000);
 }

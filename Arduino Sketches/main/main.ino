@@ -47,12 +47,17 @@ void useInterrupt(boolean v) {
 #define DHTTYPE DHT22   // DHT 22  (AM2302), AM2321
 DHT dht(DHTPIN, DHTTYPE);
 
+//***** Set up eTape Pins *****//
+// the value of the 'other' resistor
+#define SERIESRESISTOR 560    
+// What pin to connect the sensor to
+#define SENSORPIN A0 
+
 
 
 void setup() {
    //Setup Flowrate sensors   
    Serial.begin(9600);
-   Serial.print("Flow sensor test!"); 
    pinMode(FLOWSENSORPIN, INPUT);
    digitalWrite(FLOWSENSORPIN, HIGH);
    lastflowpinstate = digitalRead(FLOWSENSORPIN);
@@ -65,20 +70,25 @@ void setup() {
 
 void loop()                     // run over and over again
 { 
-  delay(2000);
+  delay(5000);
   float liters = pulses;
   liters /= 7.5;
   liters /= 60.0;  
+  liters /= 3.785412534257983;
   float h = dht.readHumidity();
   float f = dht.readTemperature(true);
+  float reading;
+  reading = analogRead(SENSORPIN);   
+  reading = (1023 / reading)  - 1;
+  reading = SERIESRESISTOR / reading;
   if (isnan(h) || isnan(f)) {
-    Serial.println(F("Failed to read from DHT sensor!"));
-    return;
+    h = 0;
+    f = 0;
   }
 
-  //Serial.print("Freq: "); Serial.println(flowrate);
-  //Serial.print("Pulses: "); Serial.println(pulses, DEC);
-  Serial.print("Liters:");Serial.print(liters); 
+  Serial.print("Pulss:");Serial.print(pulses); 
+  Serial.print(" eTape:"); 
+  Serial.print(reading);
   Serial.print(F(" Humidity:"));
   Serial.print(h);
   Serial.print(F("%  Temperature:"));

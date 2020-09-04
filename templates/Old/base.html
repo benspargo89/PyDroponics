@@ -1,0 +1,53 @@
+<!doctype html>
+<title>Hydroponic Dashboard</title>
+<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/normalize.css">
+<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/sakura-earthly.css">
+
+<hr>
+<p>PyDroponics</p>
+<hr>
+<span>Temperature: <span id="temperature"></span></span>
+<br></br>
+<span>Humidity: <span id="humidty"></span></span>
+<br></br>
+<button type="button" id="toggle" <span>Pump Status: <span id="pump_state"></span></span></button>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+
+    function retrieve_data() {
+      $.ajax({
+        method: 'GET',
+        url: {{ url_for('sensor_data')|tojson }},
+        _data: $(this).serialize()
+      }).done(publish_data_to_html);
+    }
+
+    function publish_data_to_html(_data) {
+      $('#temperature').text(_data.temperature);
+      $('#humidty').text(_data.humidity);
+    }
+
+
+    function pump_click() {
+      $.ajax({
+        method: 'GET',
+        url: {{ url_for('toggle_pump')|tojson }},
+        data: $(this).serialize()
+      }).done(pump_status);
+    }
+
+    function pump_status(data) {
+      $('#pump_state').text(data.pump_state);
+    }
+
+    $('#toggle').click(pump_click);
+
+
+
+$(document).ready(function(){
+ setInterval(retrieve_data,3000);
+});
+
+  </script>

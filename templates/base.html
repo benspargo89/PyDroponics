@@ -1,19 +1,73 @@
 <!doctype html>
 <title>Hydroponic Dashboard</title>
-<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/normalize.css">
-<link rel="stylesheet" href="https://unpkg.com/sakura.css@1.0.0/css/sakura-earthly.css">
+<head>
+              <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 
-<hr>
-<p>PyDroponics</p>
-<hr>
-<span>Temperature: <span id="temperature"></span></span>
-<br></br>
-<span>Humidity: <span id="humidty"></span></span>
-<br></br>
+</head>
+<body style=background-color:black>
 <button type="button" id="toggle" <span>Pump Status: <span id="pump_state"></span></span></button>
+<br></br>
+
+<style>
+
+        .container {display: flex;
+                    flex-wrap: wrap;
+                    background-color: black;    
+                    border-radius: 5px;
+                    border: 3px outset white;
+                    padding: 0px;
+                    align-items: center;
+                    justify-content: center;}
+
+        .right {width: 705px; 
+                height: 460px;}
+        .small {height: 218px;
+                flex-grow: 1;
+                margin: 2px}
+        .break {display: flex;
+                flex-basis: 100%;
+                height: 0;}
+
+</style>
+
+
+<div class="container right">
+  <div class="container small" id="bargraph">
+    <script>
+      var graphs = {{plot | safe}};
+      var layout = {width: 325,
+                    height: 210,
+                    autosize: false};
+      Plotly.plot('bargraph',graphs,layout);
+    </script>
+  </div>
+  <div class="container small" id="bargraph2">
+    <script>
+      var graphs2 = {{plot2 | safe}};
+      var layout = {width: 325,
+                    height: 210};
+      Plotly.plot('bargraph',graphs2,layout);
+    </script>
+
+
+  </div>
+  <div class='break'></div>
+
+  <div class="container small">3</div>
+  <div class="container small">4</div>
+</div>
+
+
+</body>
+
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+
+
   <script>
 
     function retrieve_data() {
@@ -27,7 +81,30 @@
     function publish_data_to_html(_data) {
       $('#temperature').text(_data.temperature);
       $('#humidty').text(_data.humidity);
+      $('#graphs').text(_data.chart);
+      console.log(_data.chart);
+      var d = JSON.parse(_data.chart);
+      console.log(d)
+      var layout = {width: 330,
+              height: 210,
+              autosize: true};
+      Plotly.newPlot('bargraph',  d, layout);
+
     }
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
 
 
     function pump_click() {
