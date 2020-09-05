@@ -56,11 +56,14 @@ def sensor_data():
     expected_sensors = ['Temperature', 'Humidity', 'Pulss', 'eTape']
     timeout = 10
     sensor_data = read_sensor_data(expected_sensors, timeout)
+    print(sensor_data)
     chart_val = ri(1,100)
+    temp = float(sensor_data['Temperature'][:-2])
+    print(temp)
     payload = jsonify(temperature=sensor_data['Temperature']
 		    , humidity=sensor_data['Humidity']
-		    , chart=create_plot(chart_val, last_chart_value)
-		    , chart2=create_plot(chart_val, last_chart_value))
+		    , chart=create_plot(temp, last_chart_value)
+		    , chart2=create_plot(temp, last_chart_value))
     last_chart_value = chart_val
     return payload
 

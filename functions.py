@@ -2,13 +2,13 @@ from gpiozero import LED
 from serial import Serial
 import time
 from sys import platform
-        
+
 class pump_control:
     """This class is used to manage the AC/DC relay made by Digital Loggers.
        This class will be used to manage the Pump of a NFT hydroponic system.
        Initializing to the last state is used so that if the RPI reboots for some reason,
        it wil continue to work as it was before the reboot."""
-    
+
     def __init__(self, pin, start_state=None):
         self.switch = LED(pin)
         if start_state:
@@ -18,22 +18,22 @@ class pump_control:
                 self.off()
         else:
             self.init_state()
-        
+
     def read_state(self):
         with open('pump_state.txt') as file:
             data = file.read().strip()
         return data
-    
+
     def write_state(self, state):
         with open('pump_state.txt', 'w+') as file:
             file.write(state)
-    
+
     def on(self):
         self.switch.on()
         self.pump_state = 'on'
         self.write_state(self.pump_state)
 
-    
+
     def off(self):
         self.switch.off()
         self.pump_state = 'off'
@@ -44,7 +44,7 @@ class pump_control:
             self.on()
         else:
             self.off()
-    
+
     def init_state(self):
         ls = self.read_state()
         if ls == 'on':
@@ -53,10 +53,7 @@ class pump_control:
         else:
             self.off()
             self.pump_state = 'off'
-            
- 
- 
-  
+
 def read_sensor_data(expected_sensors, timeout):
     """This function reads serial data from an Arduino Uno.
        The Arduino receives data from a number of sensors, including
@@ -67,38 +64,37 @@ def read_sensor_data(expected_sensors, timeout):
         1. Before plugging in Arduino, run command: sudo ls /dev/tty*
         2. Plugin Arduino and run command above.
         3. Identify which tty was added, write that one as the port below"""
-    
+
     if 'linux' in platform:
         port = '/dev/ttyACM0'
     else:
         ##For when I am testing arduino on Windows
         port = "COM3"
-    
-    baudrate = 9600
-    
-    with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
-        Port.flushInput()    
-        line = Port.readline().decode().strip()
-        start = time.time()
-        while ":" not in line and time.time() - start < timeout:
-            line = Port.readline().decode().strip()
-        Port.close()
-        
-    sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
-    
-    """Write sensor values to sensor dictionary.
-    This method and a timeout is used so that we see blank values if sensor fails to
-    return data in specified timeout"""
-    for item in line.split():
-        sensor  = item.split(':')[0]
-        reading = item.split(':')[1]
-        if sensor in expected_sensors:
-            sensor_dictionary[sensor] = reading
-        
-    return sensor_dictionary
- 
- 
 
+    baudrate = 9600
+    try:
+        with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
+            Port.flushInput()
+            line = Port.readline().decode().strip()
+            start = time.time()
+            while ":" not in line and time.time() - start < timeout:
+                line = Port.readline().decode().strip()
+            Port.close()
+
+        sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
+
+        """Write sensor values to sensor dictionary.
+        This method and a timeout is used so that we see blank values if sensor fails to
+        return data in specified timeout"""
+        for item in line.split():
+            sensor  = item.split(':')[0]
+            reading = item.split(':')[1]
+            if sensor in expected_sensors:
+                sensor_dictionary[sensor] = reading
+    except:
+        sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}        
+
+    return sensor_dictionary
 
 ##to do
 
