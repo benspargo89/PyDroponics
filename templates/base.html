@@ -33,30 +33,44 @@
 
 
 <div class="container right">
-  <div class="container small" id="bargraph">
+  <div class="container small" id="temp_chart">
     <script>
-      var graphs = {{plot | safe}};
+      var graphs = {{temp_chart | safe}};
       var layout = {width: 325,
                     height: 210,
                     margin: {l: 5, r:5, t:5, b:5, pad:5}};
-      Plotly.plot('bargraph',graphs,layout);
+      Plotly.plot('temp_chart', graphs,layout);
     </script>
   </div>
-  <div class="container small" id="bargraph2">
+  <div class="container small" id="flow_chart">
     <script>
-      var graphs2 = {{plot2 | safe}};
+      var graphs = {{flow_chart | safe}};
       var layout = {width: 325,
                     height: 210,
                     margin: {l: 5, r:5, t:5, b:5, pad:5}};
-      Plotly.plot('bargraph2',graphs2,layout);
+      Plotly.plot('flow_chart', graphs,layout);
     </script>
-
-
   </div>
   <div class='break'></div>
 
-  <div class="container small">3</div>
-  <div class="container small">4</div>
+  <div class="container small" id="humidity_chart">
+    <script>
+      var graphs = {{humidity_chart | safe}};
+      var layout = {width: 325,
+                    height: 210,
+                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
+      Plotly.plot('humidity_chart', graphs,layout);
+    </script>
+  </div>
+    <div class="container small" id="level_chart">
+    <script>
+      var graphs = {{level_chart | safe}};
+      var layout = {width: 325,
+                    height: 210,
+                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
+      Plotly.plot('level_chart', graphs,layout);
+    </script>
+  </div>
 </div>
 
 
@@ -80,18 +94,18 @@
     }
 
     function publish_data_to_html(_data) {
-      $('#temperature').text(_data.temperature);
-      $('#humidty').text(_data.humidity);
-      $('#graphs').text(_data.chart);
-      console.log(_data.chart);
-      var d = JSON.parse(_data.chart);
-      var e = JSON.parse(_data.chart2);
-      console.log(d)
+      var temp = JSON.parse(_data.temp_chart);
+      var flow = JSON.parse(_data.flow_chart);
+      var humidity = JSON.parse(_data.humidity_chart);
+      var level = JSON.parse(_data.level_chart);
       var layout = {width: 325,
                     height: 210,
                     margin: {l: 5, r:5, t:5, b:5, pad:5}};
-      Plotly.newPlot('bargraph',  d, layout);
-      Plotly.newPlot('bargraph',  e, layout);
+      Plotly.newPlot('temp_chart',  temp, layout);
+      Plotly.newPlot('flow_chart',  flow, layout);
+      Plotly.newPlot('humidity_chart',  humidity, layout);
+      Plotly.newPlot('level_chart',  level, layout);
+
 
     }
 
