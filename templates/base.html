@@ -6,23 +6,31 @@
 
 </head>
 <body style=background-color:black>
-<button type="button" id="toggle" <span>Pump Status: <span id="pump_state"></span></span></button>
-<br></br>
+
 
 <style>
 
         .container {display: flex;
+                    float: left;
                     flex-wrap: wrap;
                     background-color: black;    
                     border-radius: 5px;
-                    border: 3px outset white;
-                    padding: 0px;
+                    border: 2px inset white;
+                    padding: 2px;
                     align-items: center;
                     justify-content: center;}
 
         .right {width: 705px; 
                 height: 460px;}
+        .left {width: 85px; 
+               height: 460px;}
         .small {height: 218px;
+                flex-grow: 1;
+                margin: 2px}
+        .top {height: 60px;
+                flex-grow: 1;
+                margin: 2px}
+        .bottom {height: 376px;
                 flex-grow: 1;
                 margin: 2px}
         .break {display: flex;
@@ -31,6 +39,17 @@
 
 </style>
 
+<div class="container left">
+  <div class="container top">
+      <button type="button" id="toggle" <span>Pump Status: <span id="pump_state"></span></span></button>
+  </div>
+  <div class='break'></div>
+   <div class="container bottom">
+
+  </div>
+
+
+</div>
 
 <div class="container right">
   <div class="container small" id="temp_chart">
