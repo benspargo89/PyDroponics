@@ -21,8 +21,8 @@ last_humidity = 0
 last_level = 0
 chart_layout = {'width': 325,
                 'height': 210,
-                'plot_bgcolor'='black'
-                'margin': {'l': 10, 'r':10, 't':10, 'b':10, 'pad':5}}
+                 'margin': {'l': 10, 'r':10, 't':10, 'b':10, 'pad':10},
+                'paper_bgcolor':"rgba(0,0,0,0)"}
     
 def create_plot(value, last_value, formatting):
     data = [go.Indicator(
@@ -51,10 +51,17 @@ def index():
     global last_humidity
     global last_level
     sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 15)
-    temp = float(sensor_data['Temperature'][:-2])
-    humidity = float(sensor_data['Humidity'][:-1])
-    flow = float(sensor_data['Pulss']) / 60
-    level = float(sensor_data['eTape']) / 687
+    try:
+        temp = float(sensor_data['Temperature'][:-2])
+        humidity = float(sensor_data['Humidity'][:-1])
+        flow = float(sensor_data['Pulss']) / 60
+        level = float(sensor_data['eTape']) / 687
+    except:
+        print("FAILED TO RETRIEVE DATA")
+        temp=last_temp
+        humidity=last_humidity
+        flow=last_flow
+        level=last_level
     temp_chart = create_plot(temp, temp, {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":75, "Highlight_Lower":65, "Highlight_Upper":85, "Data_Suffix":'°'})
     flow_chart = create_plot(flow, flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":120, "Line_Threshold":100, "Highlight_Lower":95, "Highlight_Upper":105, "Data_Suffix":'%'})
     humidity_chart = create_plot(humidity, humidity, {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'})

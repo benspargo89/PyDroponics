@@ -36,20 +36,14 @@
   <div class="container small" id="temp_chart">
     <script>
       var graphs = {{temp_chart | safe}};
-      var layout = {{chart_layout : safe};
-      var layout2 = {width: 325,
-                    height: 210,
-                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
+      var layout = {{chart_layout | safe}};
       Plotly.plot('temp_chart', graphs,layout);
     </script>
   </div>
   <div class="container small" id="flow_chart">
     <script>
       var graphs = {{flow_chart | safe}};
-      var layout = {{chart_layout : safe};
-      var layout2 = {width: 325,
-                    height: 210,
-                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
+      var layout = {{chart_layout | safe}};
       Plotly.plot('flow_chart', graphs,layout);
     </script>
   </div>
@@ -58,20 +52,14 @@
   <div class="container small" id="humidity_chart">
     <script>
       var graphs = {{humidity_chart | safe}};
-      var layout = {{chart_layout : safe};
-      var layout2 = {width: 325,
-                    height: 210,
-                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
+      var layout = {{chart_layout | safe}};
       Plotly.plot('humidity_chart', graphs,layout);
     </script>
   </div>
     <div class="container small" id="level_chart">
     <script>
       var graphs = {{level_chart | safe}};
-      var layout = {{chart_layout : safe};
-      var layout2 = {width: 325,
-                    height: 210,
-                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
+      var layout = {{chart_layout | safe}};
       Plotly.plot('level_chart', graphs,layout);
     </script>
   </div>
@@ -102,10 +90,8 @@
       var flow = JSON.parse(_data.flow_chart);
       var humidity = JSON.parse(_data.humidity_chart);
       var level = JSON.parse(_data.level_chart);
-      var layout = JSON.parse(_data.chart_layout);
-      var layout2 = {width: 325,
-                    height: 210,
-                    margin: {l: 5, r:5, t:5, b:5, pad:5}};
+      console.log(level)
+      var layout = _data.chart_layout;
       Plotly.newPlot('temp_chart',  temp, layout);
       Plotly.newPlot('flow_chart',  flow, layout);
       Plotly.newPlot('humidity_chart',  humidity, layout);
