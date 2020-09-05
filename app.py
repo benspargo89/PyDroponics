@@ -25,8 +25,8 @@ def create_plot(value, last_value, formatting):
     domain = {'x': [0, 1], 'y': [0, 1]},
     value = value,
     mode = "gauge+number+delta",
-    title = {'text': formatting['Title']},
-	delta = {'reference': last_value},
+    title = {'text': formatting['Title'], 'font':{'size':12}},
+    delta = {'reference': last_value},
     gauge = {'axis': {'range': [formatting['Gauge_Min'], formatting['Gauge_Max']], 
                       'ticksuffix' : formatting['Data_Suffix']},
              'steps' : [{'range': [formatting['Highlight_Lower'], formatting['Highlight_Upper']], 'color': "gray"}],
@@ -42,27 +42,29 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     global last_temp
-	global last_flow
-	global last_humidity
-	global last_level
+    global last_flow
+    global last_humidity
+    global last_level
     sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 15)
     temp = float(sensor_data['Temperature'][:-2])
     humidity = float(sensor_data['Humidity'][:-1])
     flow = float(sensor_data['Pulss']) / 60
     level = float(sensor_data['eTape']) / 687
-    temp_chart = create_plot(temp, last_temp, {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":75, "Highlight_Lower":65, "Highlight_Upper":85, "Data_Suffix":'°'})
-    flow_chart = create_plot(flow, last_flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":120, "Line_Threshold":100, "Highlight_Lower":95, "Highlight_Upper":105, "Data_Suffix":'%'})
-    humidity_chart = create_plot(humidity, last_humidity, {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'})
-    level_chart = create_plot(level, last_level, {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'})
+    temp_chart = create_plot(temp, temp, {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":75, "Highlight_Lower":65, "Highlight_Upper":85, "Data_Suffix":'°'})
+    flow_chart = create_plot(flow, flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":120, "Line_Threshold":100, "Highlight_Lower":95, "Highlight_Upper":105, "Data_Suffix":'%'})
+    humidity_chart = create_plot(humidity, humidity, {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'})
+    level_chart = create_plot(level, level, {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'})
+    print(temp_chart)
     last_temp = temp
     last_humidity = humidity
     last_flow = flow
     last_level = level
-
-    return render_template("base.html", temp_chart=create_plot(temp, temp, temp_chart)
-					, flow_chart=create_plot(flow, flow, flow_chart)
-					, humidity_chart=create_plot(humidity, humidity, humidity_chart)
-					, level_chart=create_plot(level, level, level_chart))
+    print('heeheheYY@@!!')
+    return render_template("base.html"
+                    , temp_chart=temp_chart
+                    , flow_chart=flow_chart
+                    , humidity_chart=humidity_chart
+                    , level_chart=level_chart)
 
     # return render_template("base.html", pump_stat="a", temp_chart=bar, flow_chart=bar, humidity_chart=bar, level_chart=bar)
 
@@ -71,23 +73,31 @@ def index():
 @app.route("/sensor_data")
 def sensor_data():
     global last_temp
-	global last_flow
-	global last_humidity
-	global last_level
-
+    global last_flow
+    global last_humidity
+    global last_level
+    print('hereere')
     sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 15)
-    temp = float(sensor_data['Temperature'][:-2])
-    humidity = float(sensor_data['Humidity'][:-1])
-    flow = float(sensor_data['Pulss']) / 60
-    level = float(sensor_data['eTape']) / 687
+    print(sensor_data)
+    try:
+        temp = float(sensor_data['Temperature'][:-2])
+        humidity = float(sensor_data['Humidity'][:-1])
+        flow = float(sensor_data['Pulss']) / 60 * 100
+        level = float(sensor_data['eTape']) / 687
+    except:
+        print("FAILED TO GET DATA")
+        temp = last_temp
+        flow = last_flow
+        humidity = last_humidity
+        level = last_level
     temp_chart = create_plot(temp, last_temp, {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":75, "Highlight_Lower":65, "Highlight_Upper":85, "Data_Suffix":'°'})
     flow_chart = create_plot(flow, last_flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":120, "Line_Threshold":100, "Highlight_Lower":95, "Highlight_Upper":105, "Data_Suffix":'%'})
     humidity_chart = create_plot(humidity, last_humidity, {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'})
     level_chart = create_plot(level, last_level, {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'})
-    payload = jsonify(temp_chart=create_plot(temp, last_temp, temp_chart)
-					, flow_chart=create_plot(flow, last_flow, flow_chart)
-					, humidity_chart=create_plot(humidity, last_humidity, humidity_chart)
-					, level_chart=create_plot(level, last_level, level_chart))
+    payload = jsonify(temp_chart=temp_chart
+                    , flow_chart=flow_chart
+                    , humidity_chart=humidity_chart
+                    , level_chart=level_chart)
     last_temp = temp
     last_humidity = humidity
     last_flow = flow

@@ -77,7 +77,7 @@ def read_sensor_data(expected_sensors, timeout):
             Port.flushInput()
             line = Port.readline().decode().strip()
             start = time.time()
-            while ":" not in line and time.time() - start < timeout:
+            while "Temperature" not in line and time.time() - start < timeout:
                 line = Port.readline().decode().strip()
             Port.close()
 
