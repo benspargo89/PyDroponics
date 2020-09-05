@@ -21,7 +21,7 @@ last_humidity = 0
 last_level = 0
 chart_layout = {'width': 325,
                 'height': 210,
-                 'margin': {'l': 10, 'r':10, 't':10, 'b':10, 'pad':10},
+                 'margin': {'l': 10, 'r':10, 't':40, 'b':10, 'pad':10},
                 'paper_bgcolor':"rgba(0,0,0,0)"}
     
 def create_plot(value, last_value, formatting):
@@ -29,7 +29,7 @@ def create_plot(value, last_value, formatting):
     domain = {'x': [0, 1], 'y': [0, 1]},
     value = value,
     mode = "gauge+number+delta",
-    title = {'text': formatting['Title'], 'font':{'size':12}},
+    title = {'text': '<b>' + formatting['Title'] + '</b>', 'font':{'size':14, 'color':'white', }},
     delta = {'reference': last_value},
     gauge = {'axis': {'range': [formatting['Gauge_Min'], formatting['Gauge_Max']], 
                       'ticksuffix' : formatting['Data_Suffix']},
@@ -63,7 +63,7 @@ def index():
         flow=last_flow
         level=last_level
     temp_chart = create_plot(temp, temp, {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":75, "Highlight_Lower":65, "Highlight_Upper":85, "Data_Suffix":'°'})
-    flow_chart = create_plot(flow, flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":120, "Line_Threshold":100, "Highlight_Lower":95, "Highlight_Upper":105, "Data_Suffix":'%'})
+    flow_chart = create_plot(flow, flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":100, "Highlight_Lower":80, "Highlight_Upper":100, "Data_Suffix":'%'})
     humidity_chart = create_plot(humidity, humidity, {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'})
     level_chart = create_plot(level, level, {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'})
     print(temp_chart)
@@ -105,7 +105,7 @@ def sensor_data():
         humidity = last_humidity
         level = last_level
     temp_chart = create_plot(temp, last_temp, {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":75, "Highlight_Lower":65, "Highlight_Upper":85, "Data_Suffix":'°'})
-    flow_chart = create_plot(flow, last_flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":120, "Line_Threshold":100, "Highlight_Lower":95, "Highlight_Upper":105, "Data_Suffix":'%'})
+    flow_chart = create_plot(flow, last_flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":95, "Highlight_Lower":90, "Highlight_Upper":100, "Data_Suffix":'%'})
     humidity_chart = create_plot(humidity, last_humidity, {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'})
     level_chart = create_plot(level, last_level, {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'})
     payload = jsonify(temp_chart=temp_chart
