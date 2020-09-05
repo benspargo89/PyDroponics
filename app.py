@@ -9,6 +9,7 @@ import numpy as np
 import json
 import plotly.graph_objects as go
 
+pump = pump_control(4)
 
 global last_temp
 global last_flow
@@ -54,7 +55,7 @@ def index():
     try:
         temp = float(sensor_data['Temperature'][:-2])
         humidity = float(sensor_data['Humidity'][:-1])
-        flow = float(sensor_data['Pulss']) / 60
+        flow = float(sensor_data['Pulss']) / 51 * 100
         level = float(sensor_data['eTape']) / 687
     except:
         print("FAILED TO RETRIEVE DATA")
@@ -62,6 +63,7 @@ def index():
         humidity=last_humidity
         flow=last_flow
         level=last_level
+    level = 6
     temp_chart = create_plot(temp, temp, {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":75, "Highlight_Lower":65, "Highlight_Upper":85, "Data_Suffix":'°'})
     flow_chart = create_plot(flow, flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":100, "Highlight_Lower":80, "Highlight_Upper":100, "Data_Suffix":'%'})
     humidity_chart = create_plot(humidity, humidity, {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'})
@@ -96,7 +98,7 @@ def sensor_data():
     try:
         temp = float(sensor_data['Temperature'][:-2])
         humidity = float(sensor_data['Humidity'][:-1])
-        flow = float(sensor_data['Pulss']) / 60 * 100
+        flow = float(sensor_data['Pulss']) / 51 * 100
         level = float(sensor_data['eTape']) / 687
     except:
         print("FAILED TO GET DATA")
@@ -104,6 +106,7 @@ def sensor_data():
         flow = last_flow
         humidity = last_humidity
         level = last_level
+    level = 6
     temp_chart = create_plot(temp, last_temp, {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":75, "Highlight_Lower":65, "Highlight_Upper":85, "Data_Suffix":'°'})
     flow_chart = create_plot(flow, last_flow, {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":95, "Highlight_Lower":90, "Highlight_Upper":100, "Data_Suffix":'%'})
     humidity_chart = create_plot(humidity, last_humidity, {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'})
