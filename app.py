@@ -14,11 +14,15 @@ global last_temp
 global last_flow
 global last_humidity
 global last_level
+global chart_layout
 last_temp = 0
 last_flow = 0
 last_humidity = 0
 last_level = 0
-
+chart_layout = {'width': 325,
+                'height': 210,
+                'plot_bgcolor'='black'
+                'margin': {'l': 10, 'r':10, 't':10, 'b':10, 'pad':5}}
     
 def create_plot(value, last_value, formatting):
     data = [go.Indicator(
@@ -41,6 +45,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
+    global chart_layout
     global last_temp
     global last_flow
     global last_humidity
@@ -64,7 +69,8 @@ def index():
                     , temp_chart=temp_chart
                     , flow_chart=flow_chart
                     , humidity_chart=humidity_chart
-                    , level_chart=level_chart)
+                    , level_chart=level_chart
+                    , chart_layout=chart_layout)
 
     # return render_template("base.html", pump_stat="a", temp_chart=bar, flow_chart=bar, humidity_chart=bar, level_chart=bar)
 
@@ -72,6 +78,7 @@ def index():
 
 @app.route("/sensor_data")
 def sensor_data():
+    global chart_layout
     global last_temp
     global last_flow
     global last_humidity
@@ -97,7 +104,8 @@ def sensor_data():
     payload = jsonify(temp_chart=temp_chart
                     , flow_chart=flow_chart
                     , humidity_chart=humidity_chart
-                    , level_chart=level_chart)
+                    , level_chart=level_chart
+                    , chart_layout=chart_layout)
     last_temp = temp
     last_humidity = humidity
     last_flow = flow
