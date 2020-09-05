@@ -25,8 +25,8 @@ def create_plot(value, last_value, formatting):
     domain = {'x': [0, 1], 'y': [0, 1]},
     value = value,
     mode = "gauge+number+delta",
-    title = {'text': formatting['Title'], "font":{'size':6 }}, ##, "font":{'size':6 }
-    delta = {'reference': last_value},
+    title = {'text': formatting['Title']},
+	delta = {'reference': last_value},
     gauge = {'axis': {'range': [formatting['Gauge_Min'], formatting['Gauge_Max']], 
                       'ticksuffix' : formatting['Data_Suffix']},
              'steps' : [{'range': [formatting['Highlight_Lower'], formatting['Highlight_Upper']], 'color': "gray"}],
