@@ -48,7 +48,7 @@ def index():
                     , flow_chart=flow_chart
                     , humidity_chart=humidity_chart
                     , level_chart=level_chart
-                    , chart_layout=chart_layout
+                    , chart_layout=session_data['chart_layout']
                     , pump_state=current_state)
 
     
@@ -77,7 +77,7 @@ def sensor_data():
                     , flow_chart=flow_chart
                     , humidity_chart=humidity_chart
                     , level_chart=level_chart
-                    , chart_layout=chart_layout)
+                    , chart_layout=session_data['chart_layout'])
     session_data['last_temp'] = temp
     session_data['last_humidity'] = humidity
     session_data['last_flow'] = flow
