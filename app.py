@@ -69,10 +69,10 @@ def sensor_data():
         humidity = session_data['last_humidity']
         level = session_data['last_level']
     level = 6
-    temp_chart = create_plot(temp, last_temp, session_data['temp_layout'])
-    flow_chart = create_plot(flow, last_flow, session_data['flow_layout'])
-    humidity_chart = create_plot(humidity, last_humidity, session_data['humidity_layout']) 
-    level_chart = create_plot(level, last_level, session_data['level_layout'])
+    temp_chart = create_plot(temp, session_data['last_temp'], session_data['temp_layout'])
+    flow_chart = create_plot(flow, session_data['last_flow'], session_data['flow_layout'])
+    humidity_chart = create_plot(humidity, session_data['last_humidity'], session_data['humidity_layout']) 
+    level_chart = create_plot(level, session_data['last_level'], session_data['level_layout'])
     payload = jsonify(temp_chart=temp_chart
                     , flow_chart=flow_chart
                     , humidity_chart=humidity_chart
