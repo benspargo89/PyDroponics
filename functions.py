@@ -2,6 +2,10 @@ from gpiozero import LED
 from serial import Serial
 import time
 from sys import platform
+import plotly
+import plotly.graph_objs as go
+import json
+import plotly.graph_objects as go
 
 class pump_control:
     """This class is used to manage the AC/DC relay made by Digital Loggers.
@@ -95,6 +99,28 @@ def read_sensor_data(expected_sensors, timeout):
         sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}        
 
     return sensor_dictionary
+
+
+def create_plot(value, last_value, formatting):
+    data = [go.Indicator(
+    domain = {'x': [0, 1], 'y': [0, 1]},
+    value = value,
+    mode = "gauge+number+delta",
+    title = {'text': '<b>' + formatting['Title'] + '</b>', 'font':{'size':14, 'color':'white', }},
+    delta = {'reference': last_value},
+    gauge = {'axis': {'range': [formatting['Gauge_Min'], formatting['Gauge_Max']], 
+                      'ticksuffix' : formatting['Data_Suffix']},
+             'steps' : [{'range': [formatting['Highlight_Lower'], formatting['Highlight_Upper']], 'color': "gray"}],
+                        'threshold' : {'line': {'color': "green", 'width': 4}, 
+                        'thickness': 0.75, 'value': formatting['Line_Threshold']},
+                        'bordercolor':'white'})]
+    graphJSON = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
+
+
+
+
+
 
 ##to do
 
