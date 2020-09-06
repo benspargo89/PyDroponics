@@ -83,6 +83,7 @@ def read_sensor_data(expected_sensors, timeout):
             start = time.time()
             while "Temperature" not in line and time.time() - start < timeout:
                 line = Port.readline().decode().strip()
+                print(line)
             Port.close()
 
         sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
