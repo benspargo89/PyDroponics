@@ -115,24 +115,7 @@
       Plotly.newPlot('flow_chart',  flow, layout);
       Plotly.newPlot('humidity_chart',  humidity, layout);
       Plotly.newPlot('level_chart',  level, layout);
-
-
     }
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
 
     function pump_click() {
       $.ajax({
@@ -148,10 +131,15 @@
 
     $('#toggle').click(pump_click);
 
+function timeout() {
+    setTimeout(function () {
+        retrieve_data,
+        timeout();
+    }, 20000);
+}
 
+$(document).ready(function(){timeout})
 
-$(document).ready(function(){
- setInterval(retrieve_data,3000);
-});
+<!-- $(document).ready(function(){setInterval(retrieve_data,60000);}); -->
 
   </script>

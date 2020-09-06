@@ -1,5 +1,6 @@
 from gpiozero import LED
 from serial import Serial
+import serial
 import time
 from sys import platform
 import plotly
@@ -76,22 +77,48 @@ def read_sensor_data(expected_sensors, timeout):
         port = "COM3"
 
     baudrate = 9600
-    with Serial(port=port, baudrate=baudrate, timeout=20) as Port:
+    with Serial(port=port
+              , baudrate=baudrate
+              , timeout=30
+              , bytesize=serial.EIGHTBITS
+              , parity=serial.PARITY_NONE
+              , stopbits=serial.STOPBITS_ONE
+              , xonxoff=0
+              , rtscts=0) as Port:
+
         attempts = 3
+        
         for attempt in range(attempts):
             try:
+                Port.setDTR(False)
+                time.sleep(.1)
                 Port.reset_input_buffer()
-                line = Port.readline().decode().strip('\n')
-                print('Attempt:', attempt, line)
-                if 'Temperature' in line and 'Humidity' in line and 'Pulss' in line and 'eTape' in line:
+                Port.flushInput()
+                sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
+            ##try:
+                line = Port.readline().decode().strip()
+                print('Attempt:', attempt, line, line[-1], line[0])
+                if line[-1] == 'F' and line[0] == 'P':
                     for item in line.split():
                         sensor  = item.split(':')[0]
                         reading = item.split(':')[1]
                         if sensor in expected_sensors:
                             sensor_dictionary[sensor] = reading
+                    print('wahoo, returning data!', time.time())
                     return sensor_dictionary
-            except:
-                pass
+                else:
+                    time.sleep(1)
+
+            except serial.serialutil.SerialException:
+                print('Ran into a SerialException!')
+                Port.setDTR(False)
+                time.sleep(.1)
+                Port.reset_input_buffer()
+                Port.flushInput()
+
+
+            ##except:
+      ##          pass
 
         # start = time.time()
         # while "Temperature" not in line and time.time() - start < timeout:
