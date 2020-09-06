@@ -7,6 +7,8 @@ import plotly
 import plotly.graph_objs as go
 import json
 import plotly.graph_objects as go
+import sys
+
 
 class pump_control:
     """This class is used to manage the AC/DC relay made by Digital Loggers.
@@ -59,7 +61,34 @@ class pump_control:
             self.off()
             self.pump_state = 'off'
 
+
+
+
+
 def read_sensor_data(expected_sensors, timeout):
+    port = '/dev/ttyACM0'
+    with serial.Serial(port, 9600, timeout=1) as ser:
+        # We use a Bi-directional BufferedRWPair so people who copy + adapt can write as well as read
+        sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
+        while True:
+            try:
+                line = sio.readline()
+            except UnicodeDecodeError:
+                continue # decode error - keep calm and carry on
+            if line.count(':') == 4:
+                sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
+                print(line)
+                sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
+                for i, item in enumerate(line.split()):
+                    reading = item.split(':')[1]
+                    sensor_dictionary[sensors[i]] = reading
+                print('wahoo, returning data!', time.time())
+                sys.stdout.flush() # to avoid buffering, needed for websocketd
+                return sensor_dictionary
+
+
+
+def read_sensor_data2(expected_sensors, timeout):
     """This function reads serial data from an Arduino Uno.
        The Arduino receives data from a number of sensors, including
        temerature, humidity, water level, and water flow rate.
