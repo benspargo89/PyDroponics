@@ -76,28 +76,28 @@ def read_sensor_data(expected_sensors, timeout):
         port = "COM3"
 
     baudrate = 9600
-    try:
-        with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
-            Port.flushInput()
+    # try:
+    with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
+        Port.flushInput()
+        line = Port.readline().decode().strip()
+        start = time.time()
+        while "Temperature" not in line and time.time() - start < timeout:
             line = Port.readline().decode().strip()
-            start = time.time()
-            while "Temperature" not in line and time.time() - start < timeout:
-                line = Port.readline().decode().strip()
-                print(line)
-            Port.close()
+            print(line)
+        Port.close()
 
-        sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
+    sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
 
-        """Write sensor values to sensor dictionary.
-        This method and a timeout is used so that we see blank values if sensor fails to
-        return data in specified timeout"""
-        for item in line.split():
-            sensor  = item.split(':')[0]
-            reading = item.split(':')[1]
-            if sensor in expected_sensors:
-                sensor_dictionary[sensor] = reading
-    except:
-        sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}        
+    """Write sensor values to sensor dictionary.
+    This method and a timeout is used so that we see blank values if sensor fails to
+    return data in specified timeout"""
+    for item in line.split():
+        sensor  = item.split(':')[0]
+        reading = item.split(':')[1]
+        if sensor in expected_sensors:
+            sensor_dictionary[sensor] = reading
+    # except:
+    #     sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}        
 
     return sensor_dictionary
 
