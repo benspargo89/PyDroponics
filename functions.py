@@ -77,12 +77,13 @@ def read_sensor_data(expected_sensors, timeout):
 
     baudrate = 9600
     # try:
-    with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
-        Port.flushInput()
-        line = Port.readline().decode().strip()
+    with Serial(port=port, baudrate=baudrate, timeout=20) as Port:
+        Port.reset_input_buffer()
+        line = Port.readline().decode().strip('\n')
+        print('First Read', line)
         start = time.time()
         while "Temperature" not in line and time.time() - start < timeout:
-            line = Port.readline().decode().strip()
+            line = Port.readline().decode().strip('\n')
             print(line)
         Port.close()
 

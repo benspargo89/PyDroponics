@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 15)
+    sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 25)
     try:
         temp = float(sensor_data['Temperature'][:-2])
         humidity = float(sensor_data['Humidity'][:-1])
@@ -55,7 +55,7 @@ def index():
 
 @app.route("/sensor_data")
 def sensor_data():
-    sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 15)
+    sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 25)
     print(sensor_data)
     try:
         temp = float(sensor_data['Temperature'][:-2])
