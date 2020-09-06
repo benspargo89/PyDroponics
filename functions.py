@@ -76,16 +76,23 @@ def read_sensor_data(expected_sensors, timeout):
         port = "COM3"
 
     baudrate = 9600
-    # try:
     with Serial(port=port, baudrate=baudrate, timeout=20) as Port:
-        Port.reset_input_buffer()
-        line = Port.readline().decode().strip('\n')
-        print('First Read', line)
-        start = time.time()
-        while "Temperature" not in line and time.time() - start < timeout:
-            line = Port.readline().decode().strip('\n')
-            print(line)
-        Port.close()
+        attempts = 3
+        for attempt in attempts:
+            try:
+                Port.reset_input_buffer()
+                line = Port.readline().decode().strip('\n')
+                print('Attempt:', attempt, line)
+                if 'Temperature' in line and 'Humidity' in line and 'Pulss' in line and 'eTape' in line:
+                    break
+            except:
+                pass
+
+        # start = time.time()
+        # while "Temperature" not in line and time.time() - start < timeout:
+        #     line = Port.readline().decode().strip('\n')
+        #     print(line)
+        # Port.close()
 
     sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
 
@@ -97,8 +104,6 @@ def read_sensor_data(expected_sensors, timeout):
         reading = item.split(':')[1]
         if sensor in expected_sensors:
             sensor_dictionary[sensor] = reading
-    # except:
-    #     sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}        
 
     return sensor_dictionary
 
