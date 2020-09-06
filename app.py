@@ -1,6 +1,7 @@
 from flask import jsonify, render_template, Flask, Session
 from serial import Serial
 from functions import *
+from time import sleep
 
 session_data = Session()
 session_data['last_temp'] = 0
@@ -56,7 +57,7 @@ def index():
 @app.route("/sensor_data")
 def sensor_data():
     sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 25)
-    print(sensor_data)
+    print(sensor_data, '\n')
     try:
         temp = float(sensor_data['Temperature'][:-2])
         humidity = float(sensor_data['Humidity'][:-1])
@@ -82,6 +83,7 @@ def sensor_data():
     session_data['last_humidity'] = humidity
     session_data['last_flow'] = flow
     session_data['last_level'] = level
+    sleep(5)
     return payload
 
 

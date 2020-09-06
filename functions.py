@@ -92,21 +92,31 @@ def read_sensor_data(expected_sensors, timeout):
                 # Port.setDTR(False)
                 time.sleep(.1)
                 Port.reset_input_buffer()
-                Port.flushInput()
+                ##Port.flushInput()
+                time.sleep(.1)
 
                 line = Port.readline().decode().strip()
                 print('Attempt:', attempt, line, line[-1], line[0])
-                if line[-1] == 'F' and line[0] == 'P':
-                    for item in line.split():
-                        sensor  = item.split(':')[0]
-                        reading = item.split(':')[1]
-                        if sensor in expected_sensors:
-                            sensor_dictionary[sensor] = reading
-                    print('wahoo, returning data!', time.time())
-                    ##Return dictionary of values upon sucessful retreival of data
-                    return sensor_dictionary
-                else:
-                    time.sleep(1)
+                lines_to_read = 10
+                lines_read = 0
+                while lines_read < lines_to_read:
+                    if line.count(':') == 4:
+                        sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
+                        for i, item in enumerate(line.split()):
+                            ##sensor  = item.split(':')[0]
+                            reading = item.split(':')[1]
+                            ##if sensor in expected_sensors:
+                            sensor_dictionary[sensors[i]] = reading
+                        print('wahoo, returning data!', time.time())
+                        ##Return dictionary of values upon sucessful retreival of data
+                        return sensor_dictionary
+                    else:
+                        print(line, lines_read * ":(")
+                        lines_read += 1
+                        Port.reset_input_buffer()
+                        Port.flushInput()
+                        time.sleep(6)
+                        line = Port.readline().decode().strip()
 
             except serial.serialutil.SerialException:
                 print('Ran into a SerialException!')
