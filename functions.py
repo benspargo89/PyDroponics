@@ -78,7 +78,7 @@ def read_sensor_data(expected_sensors, timeout):
     baudrate = 9600
     with Serial(port=port, baudrate=baudrate, timeout=20) as Port:
         attempts = 3
-        for attempt in attempts:
+        for attempt in range(attempts):
             try:
                 Port.reset_input_buffer()
                 line = Port.readline().decode().strip('\n')
