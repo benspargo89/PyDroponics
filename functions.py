@@ -84,7 +84,12 @@ def read_sensor_data(expected_sensors, timeout):
                 line = Port.readline().decode().strip('\n')
                 print('Attempt:', attempt, line)
                 if 'Temperature' in line and 'Humidity' in line and 'Pulss' in line and 'eTape' in line:
-                    break
+                    for item in line.split():
+                        sensor  = item.split(':')[0]
+                        reading = item.split(':')[1]
+                        if sensor in expected_sensors:
+                            sensor_dictionary[sensor] = reading
+                    return sensor_dictionary
             except:
                 pass
 
@@ -94,18 +99,18 @@ def read_sensor_data(expected_sensors, timeout):
         #     print(line)
         # Port.close()
 
-    sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
+    return {expected_sensor : None for expected_sensor in expected_sensors}
 
     """Write sensor values to sensor dictionary.
     This method and a timeout is used so that we see blank values if sensor fails to
     return data in specified timeout"""
-    for item in line.split():
-        sensor  = item.split(':')[0]
-        reading = item.split(':')[1]
-        if sensor in expected_sensors:
-            sensor_dictionary[sensor] = reading
+    # for item in line.split():
+    #     sensor  = item.split(':')[0]
+    #     reading = item.split(':')[1]
+    #     if sensor in expected_sensors:
+    #         sensor_dictionary[sensor] = reading
 
-    return sensor_dictionary
+    # return sensor_dictionary
 
 
 def create_plot(value, last_value, formatting):
