@@ -29,10 +29,10 @@ def index():
         level = float(sensor_data['eTape']) / 687
     except:
         print("FAILED TO RETRIEVE DATA")
-        temp=last_temp
-        humidity=last_humidity
-        flow=last_flow
-        level=last_level
+        temp=session_data['last_temp']
+        humidity=session_data['last_humidity']
+        flow=session_data['last_flow']
+        level=session_data['last_level']
     level = 6
     temp_chart = create_plot(temp, temp, session_data['temp_layout'])
     flow_chart = create_plot(flow, flow, session_data['flow_layout'])
