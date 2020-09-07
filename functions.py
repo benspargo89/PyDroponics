@@ -1,7 +1,7 @@
 from gpiozero import LED
 from serial import Serial
 import serial
-import time
+from time import time, sleep
 import plotly
 # import plotly.graph_objs as go
 import plotly.graph_objects as go
@@ -64,10 +64,10 @@ class pump_control:
 
 def fetch_data(Port, timeout):
     Port.reset_input_buffer()
-    start = time.time()
+    start = time()
     sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
     sensor_dictionary = {expected_sensor : None for expected_sensor in sensors}
-    while time.time() - start < timeout:
+    while time() - start < timeout:
         try:
             line = Port.readline().decode().strip()
             print('line: ', line)
@@ -112,11 +112,15 @@ def manage_flow(flow, session_data, pump):
     session_data['flow_record'].popleft()
     session_data['flow_record'].append(flow)
     average_flow = round(sum(session_data ['flow_record']) / len(session_data ['flow_record']), 2)
-    if (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 75) and ((flow < 25) average_flow < 60):
-        send_message(f'Pump flow is currently running at {round(flow,2)}%. Average rate is {average_flow}', account_sid, messaging_service_sid, auth_token, number)
+    if (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 75) and (flow < 25):
+        send_message(f'Current Flow - Pump flow is currently running at {round(flow,2)}%. Average rate is {average_flow}', account_sid, messaging_service_sid, auth_token, number)
         print('\n*****SENDING MESSAGE*****\n')
+    elif (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 75) and (average_flow < 60):
+        send_message(f'Average Flow - Pump flow is currently running at {round(flow,2)}%. Average rate is {average_flow}', account_sid, messaging_service_sid, auth_token, number)
+        print('\n*****SENDING MESSAGE*****\n')
+ 
     else:
-        print(f'PUMP IS RUNNING CORRECTLY. Flow: {flow}. Average Flow: {average_flow} ({session_data['flow_record']}).')    
+        print(f'PUMP IS RUNNING CORRECTLY. Flow: {flow}. Average Flow: {average_flow}')    
     return  
 
 
