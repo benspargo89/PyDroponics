@@ -1,7 +1,9 @@
 from flask import jsonify, render_template, Flask, Session
 from serial import Serial
 from functions import *
-from time import sleep
+from secrets import *
+from time import sleep, time
+import json
 
 session_data = Session()
 session_data['last_temp'] = 0
@@ -14,12 +16,18 @@ session_data['flow_layout'] = {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":1
 session_data['humidity_layout'] = {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'}
 session_data['level_layout'] = {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'}
 session_data['Port'] = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-
+session_data['pump_start'] = time()
 
 pump = pump_control(4)
 app = Flask(__name__) 
 
-
+def manage_flow(flow, session_data, pump):
+    if (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 20) and (flow < 50):
+        send_message(f'Pump flow is currently {flow}%', account_sid, messaging_service_sid, auth_token, number)
+        print('\n*****SENDING MESSAGE*****\n')
+    else:
+        print('PUMP IS RUNNING CORRECTLY')    
+    return    
 
 @app.route("/")
 def index():
@@ -57,6 +65,7 @@ def sensor_data():
     temp = float(sensor_data['Temperature'][:-2])
     humidity = float(sensor_data['Humidity'][:-1])
     flow = float(sensor_data['Pulss']) / 51 * 100
+    manage_flow(flow, session_data, pump)
     level = float(sensor_data['eTape']) / 687
     level = 6
     temp_chart = create_plot(temp, session_data['last_temp'], session_data['temp_layout'])

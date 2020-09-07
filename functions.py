@@ -7,6 +7,7 @@ import plotly
 import plotly.graph_objects as go
 from twilio.rest import Client
 from secrets import *
+import json
 
 
 class pump_control:
@@ -106,10 +107,7 @@ def send_message(payload, account_sid, messaging_service_sid, auth_token, number
              messaging_service_sid=messaging_service_sid,
              to=number)
 
-def manage_flow(flow, session_data):
-        if (pump.pump_state.title() == 'On') and (time() = session_data['pump_start'] > 20) and (flow < 50):
-            send_message(f'Pump flow is currently {flow}%', account_sid, messaging_service_sid, auth_token, number)
-        return    
+
 
 def log_data(data):
     pass
