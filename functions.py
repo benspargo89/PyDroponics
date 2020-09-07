@@ -8,6 +8,7 @@ import plotly.graph_objs as go
 import json
 import plotly.graph_objects as go
 import sys
+import io
 
 
 class pump_control:
@@ -65,16 +66,27 @@ class pump_control:
 
 
 
-def read_sensor_data(expected_sensors, timeout):
+def read_sensor_data2(expected_sensors, timeout):
+    start_time = time.time()
+    t = timeout
     port = '/dev/ttyACM0'
     with serial.Serial(port, 9600, timeout=1) as ser:
         # We use a Bi-directional BufferedRWPair so people who copy + adapt can write as well as read
         sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
         while True:
+            if time.time() - start_time > t:
+                return {expected_sensor : None for expected_sensor in expected_sensors}
             try:
-                line = sio.readline()
+                line = sio.readline().decode().strip()
             except UnicodeDecodeError:
                 continue # decode error - keep calm and carry on
+            except serial.serialutil.SerialException:
+                sys.stdin.flush()
+                ser.setDTR(False)
+                time.sleep(1)
+                ser.reset_input_buffer()
+                ser.setDTR(True)
+                continue
             if line.count(':') == 4:
                 sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
                 print(line)
@@ -88,7 +100,7 @@ def read_sensor_data(expected_sensors, timeout):
 
 
 
-def read_sensor_data2(expected_sensors, timeout):
+def read_sensor_data(expected_sensors, timeout):
     """This function reads serial data from an Arduino Uno.
        The Arduino receives data from a number of sensors, including
        temerature, humidity, water level, and water flow rate.

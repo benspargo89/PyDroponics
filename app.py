@@ -23,17 +23,17 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 25)
-    try:
-        temp = float(sensor_data['Temperature'][:-2])
-        humidity = float(sensor_data['Humidity'][:-1])
-        flow = float(sensor_data['Pulss']) / 51 * 100
-        level = float(sensor_data['eTape']) / 687
-    except:
-        print("FAILED TO RETRIEVE DATA")
-        temp=session_data['last_temp']
-        humidity=session_data['last_humidity']
-        flow=session_data['last_flow']
-        level=session_data['last_level']
+#     try:
+    temp = float(sensor_data['Temperature'][:-2])
+    humidity = float(sensor_data['Humidity'][:-1])
+    flow = float(sensor_data['Pulss']) / 51 * 100
+    level = float(sensor_data['eTape']) / 687
+#     except:
+#         print("FAILED TO RETRIEVE DATA")
+#         temp=session_data['last_temp']
+#         humidity=session_data['last_humidity']
+#         flow=session_data['last_flow']
+#         level=session_data['last_level']
     level = 6
     temp_chart = create_plot(temp, temp, session_data['temp_layout'])
     flow_chart = create_plot(flow, flow, session_data['flow_layout'])
@@ -58,17 +58,17 @@ def index():
 def sensor_data():
     sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 25)
     print(sensor_data, '\n')
-    try:
-        temp = float(sensor_data['Temperature'][:-2])
-        humidity = float(sensor_data['Humidity'][:-1])
-        flow = float(sensor_data['Pulss']) / 51 * 100
-        level = float(sensor_data['eTape']) / 687
-    except:
-        print("FAILED TO GET DATA")
-        temp = session_data['last_temp']
-        flow = session_data['last_flow']
-        humidity = session_data['last_humidity']
-        level = session_data['last_level']
+#     try:
+    temp = float(sensor_data['Temperature'][:-2])
+    humidity = float(sensor_data['Humidity'][:-1])
+    flow = float(sensor_data['Pulss']) / 51 * 100
+    level = float(sensor_data['eTape']) / 687
+#     except:
+#         print("FAILED TO GET DATA")
+#         temp = session_data['last_temp']
+#         flow = session_data['last_flow']
+#         humidity = session_data['last_humidity']
+#         level = session_data['last_level']
     level = 6
     temp_chart = create_plot(temp, session_data['last_temp'], session_data['temp_layout'])
     flow_chart = create_plot(flow, session_data['last_flow'], session_data['flow_layout'])
