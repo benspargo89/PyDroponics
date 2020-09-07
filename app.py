@@ -22,7 +22,7 @@ pump = pump_control(4)
 app = Flask(__name__) 
 
 def manage_flow(flow, session_data, pump):
-    if (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 45) and (flow < 75):
+    if (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 75) and (flow < 45):
         send_message(f'Pump flow is currently running at {round(flow,2)}%', account_sid, messaging_service_sid, auth_token, number)
         print('\n*****SENDING MESSAGE*****\n')
     else:
