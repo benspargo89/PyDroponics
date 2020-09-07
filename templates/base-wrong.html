@@ -3,13 +3,13 @@
 <head>
               <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
               <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-          
-        
+
 </head>
 <body style=background-color:black>
 
 
 <style>
+
         .container {display: flex;
                     float: left;
                     flex-wrap: wrap;
@@ -37,19 +37,11 @@
                 flex-basis: 100%;
                 height: 0;}
 
-        .fa {color: green;
-             background-color:black;
-             border-color:black;}
-
 </style>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
 
 <div class="container left">
   <div class="container top">
-      <button type="button" id="toggle" <i class="fa fa-shower fa-2x" id="shower-icon"></i></button>
+      <button type="button" id="toggle" <span>Pump Status: <span id="pump_state"></span></span></button>
   </div>
   <div class='break'></div>
    <div class="container bottom">
@@ -134,11 +126,7 @@
     }
 
     function pump_status(data) {
-      // $('#pump_state').text(data.pump_state);
-      var state = data.pump_state
-      console.log(state)
-      if (state = On){document.getElementById("shower-icon") = "green"}
-      else {document.getElementById("shower-icon") = "red"}
+      $('#pump_state').text(data.pump_state);
     }
 
     $('#toggle').click(pump_click);
