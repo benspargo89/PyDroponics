@@ -13,39 +13,27 @@ session_data['temp_layout'] = {"Title":'Temperature', "Gauge_Min":0, "Gauge_Max"
 session_data['flow_layout'] = {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":95, "Highlight_Lower":90, "Highlight_Upper":100, "Data_Suffix":'%'}
 session_data['humidity_layout'] = {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'}
 session_data['level_layout'] = {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'}
-session_data['Port'] = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-session_data['Port'].open()
+
+
 
 pump = pump_control(4)
 app = Flask(__name__) 
 
 
-def fetch_data(Port, timeout):
-    Port.reset_input_buffer()
-    start = time.time()
-    sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
-    sensor_dictionary = {expected_sensor : None for expected_sensor in sensors}
-    while time.time() - start < timeout:
-        try:
-            line = Port.readline().decode().strip()
-            if line.count(':') == 4:
-                for i, item in enumerate(line.split()):
-                    sensor_dictionary[sensors[i]] = item.split(':')[1]
-                return sensor_dictionary
-        except UnicodeDecodeError:
-            continue # decode error - keep calm and carry on
-    return sensor_dictionary
-
-
-
-
 @app.route("/")
 def index():
-    sensor_data = fetch_data(session_data['Port'], 10)
+    sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 25)
+#     try:
     temp = float(sensor_data['Temperature'][:-2])
     humidity = float(sensor_data['Humidity'][:-1])
     flow = float(sensor_data['Pulss']) / 51 * 100
     level = float(sensor_data['eTape']) / 687
+#     except:
+#         print("FAILED TO RETRIEVE DATA")
+#         temp=session_data['last_temp']
+#         humidity=session_data['last_humidity']
+#         flow=session_data['last_flow']
+#         level=session_data['last_level']
     level = 6
     temp_chart = create_plot(temp, temp, session_data['temp_layout'])
     flow_chart = create_plot(flow, flow, session_data['flow_layout'])
@@ -68,12 +56,19 @@ def index():
 
 @app.route("/sensor_data")
 def sensor_data():
-    sensor_data = fetch_data(session_data['Port'], 10)
+    sensor_data = read_sensor_data(['Temperature', 'Humidity', 'Pulss', 'eTape'], 25)
     print(sensor_data, '\n')
+#     try:
     temp = float(sensor_data['Temperature'][:-2])
     humidity = float(sensor_data['Humidity'][:-1])
     flow = float(sensor_data['Pulss']) / 51 * 100
     level = float(sensor_data['eTape']) / 687
+#     except:
+#         print("FAILED TO GET DATA")
+#         temp = session_data['last_temp']
+#         flow = session_data['last_flow']
+#         humidity = session_data['last_humidity']
+#         level = session_data['last_level']
     level = 6
     temp_chart = create_plot(temp, session_data['last_temp'], session_data['temp_layout'])
     flow_chart = create_plot(flow, session_data['last_flow'], session_data['flow_layout'])
