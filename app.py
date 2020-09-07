@@ -14,7 +14,7 @@ session_data['flow_layout'] = {"Title":'Pump Flow', "Gauge_Min":0, "Gauge_Max":1
 session_data['humidity_layout'] = {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max":100, "Line_Threshold":50, "Highlight_Lower":40, "Highlight_Upper":60, "Data_Suffix":'%'}
 session_data['level_layout'] = {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'}
 session_data['Port'] = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-session_data['Port'].open()
+
 
 pump = pump_control(4)
 app = Flask(__name__) 
@@ -28,6 +28,7 @@ def fetch_data(Port, timeout):
     while time.time() - start < timeout:
         try:
             line = Port.readline().decode().strip()
+            print('line: ', line)
             if line.count(':') == 4:
                 for i, item in enumerate(line.split()):
                     sensor_dictionary[sensors[i]] = item.split(':')[1]
@@ -56,6 +57,7 @@ def index():
     session_data['last_flow'] = flow
     session_data['last_level'] = level
     current_state = pump.pump_state.title()
+    print('rendering for the first time')
     return render_template("base.html"
                     , temp_chart=temp_chart
                     , flow_chart=flow_chart
@@ -68,6 +70,7 @@ def index():
 
 @app.route("/sensor_data")
 def sensor_data():
+    print('hey!')
     sensor_data = fetch_data(session_data['Port'], 10)
     print(sensor_data, '\n')
     temp = float(sensor_data['Temperature'][:-2])
@@ -88,7 +91,6 @@ def sensor_data():
     session_data['last_humidity'] = humidity
     session_data['last_flow'] = flow
     session_data['last_level'] = level
-    sleep(5)
     return payload
 
 

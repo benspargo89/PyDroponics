@@ -131,15 +131,9 @@
 
     $('#toggle').click(pump_click);
 
-function timeout() {
-    setTimeout(function () {
-        retrieve_data,
-        timeout();
-    }, 20000);
-}
+<!-- function timeout() {setTimeout(function () {retrieve_data,timeout();}, 1000);}-->
+<!-- $(document).ready(function(){timeout}) -->
 
-$(document).ready(function(){timeout})
-
-<!-- $(document).ready(function(){setInterval(retrieve_data,60000);}); -->
+$(document).ready(function(){setInterval(retrieve_data,15000);});
 
   </script>
