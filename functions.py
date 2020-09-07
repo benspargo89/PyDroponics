@@ -108,27 +108,21 @@ def send_message(payload, account_sid, messaging_service_sid, auth_token, number
              to=number)
 
 
+def manage_flow(flow, session_data, pump):
+    session_data['flow_record'].popleft()
+    session_data['flow_record'].append(flow)
+    average_flow = round(sum(session_data ['flow_record']) / len(session_data ['flow_record']), 2)
+    if (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 75) and ((flow < 25) average_flow < 60):
+        send_message(f'Pump flow is currently running at {round(flow,2)}%. Average rate is {average_flow}', account_sid, messaging_service_sid, auth_token, number)
+        print('\n*****SENDING MESSAGE*****\n')
+    else:
+        print(f'PUMP IS RUNNING CORRECTLY. Flow: {flow}. Average Flow: {average_flow} ({session_data['flow_record']}).')    
+    return  
 
+
+##ToDo
 def log_data(data):
     pass
 
-def monitor_pump():
-    pass
 
 
-# if 'linux' in platform:
-#     port = '/dev/ttyACM0'
-# else:
-#     ##For when I am testing arduino on Windows
-#     port = "COM3"
-# 
-# baudrate = 9600
-# 
-# with Serial(port=port, baudrate=baudrate, timeout=1) as Port:
-#     Port.flushInput()    
-#     line = Port.readline().decode().strip()
-#     start = time.time()
-#     while ":" not in line and time.time() - start < 10:
-#         line = Port.readline().decode().strip()
-#     Port.close()
-#     print(line)

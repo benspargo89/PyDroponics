@@ -4,6 +4,7 @@ from functions import *
 from secrets import *
 from time import sleep, time
 import json
+from collections import deque 
 
 session_data = Session()
 session_data['last_temp'] = 0
@@ -17,17 +18,10 @@ session_data['humidity_layout'] = {"Title":'Humidity', "Gauge_Min":0, "Gauge_Max
 session_data['level_layout'] = {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max":10, "Line_Threshold":6, "Highlight_Lower":5, "Highlight_Upper":7, "Data_Suffix":' In.'}
 session_data['Port'] = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 session_data['pump_start'] = time()
+session_data['flow_record'] = deque([100 for _ in range(10)])
 
 pump = pump_control(4)
-app = Flask(__name__) 
-
-def manage_flow(flow, session_data, pump):
-    if (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 75) and (flow < 45):
-        send_message(f'Pump flow is currently running at {round(flow,2)}%', account_sid, messaging_service_sid, auth_token, number)
-        print('\n*****SENDING MESSAGE*****\n')
-    else:
-        print('PUMP IS RUNNING CORRECTLY')    
-    return    
+app = Flask(__name__)   
 
 @app.route("/")
 def index():
