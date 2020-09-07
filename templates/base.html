@@ -136,12 +136,21 @@
     function pump_status(data) {
       // $('#pump_state').text(data.pump_state);
       var state = data.pump_state
+      let myElements = document.querySelectorAll(".fa");
       console.log(state)
-      if (state = On){document.getElementById("shower-icon") = "green"}
-      else {document.getElementById("shower-icon") = "red"}
+      if (state == "On"){for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "green";}}
+      else {for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "red";}}
     }
 
     $('#toggle').click(pump_click);
+
+let myElements = document.querySelectorAll(".fa");
+
+for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "red";}
+
+
+
+
 
 <!-- function timeout() {setTimeout(function () {retrieve_data,timeout();}, 1000);}-->
 <!-- $(document).ready(function(){timeout}) -->
