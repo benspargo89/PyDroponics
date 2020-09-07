@@ -2,13 +2,11 @@ from gpiozero import LED
 from serial import Serial
 import serial
 import time
-from sys import platform
 import plotly
-import plotly.graph_objs as go
-import json
+# import plotly.graph_objs as go
 import plotly.graph_objects as go
-import sys
-import io
+from twilio.rest import Client
+from secrets import *
 
 
 class pump_control:
@@ -63,112 +61,22 @@ class pump_control:
             self.pump_state = 'off'
 
 
-
-
-
-def read_sensor_data2(expected_sensors, timeout):
-    start_time = time.time()
-    t = timeout
-    port = '/dev/ttyACM0'
-    with serial.Serial(port, 9600, timeout=1) as ser:
-        # We use a Bi-directional BufferedRWPair so people who copy + adapt can write as well as read
-        sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
-        while True:
-            if time.time() - start_time > t:
-                return {expected_sensor : None for expected_sensor in expected_sensors}
-            try:
-                line = sio.readline().decode().strip()
-            except UnicodeDecodeError:
-                continue # decode error - keep calm and carry on
-            except serial.serialutil.SerialException:
-                sys.stdin.flush()
-                ser.setDTR(False)
-                time.sleep(1)
-                ser.reset_input_buffer()
-                ser.setDTR(True)
-                continue
+def fetch_data(Port, timeout):
+    Port.reset_input_buffer()
+    start = time.time()
+    sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
+    sensor_dictionary = {expected_sensor : None for expected_sensor in sensors}
+    while time.time() - start < timeout:
+        try:
+            line = Port.readline().decode().strip()
+            print('line: ', line)
             if line.count(':') == 4:
-                sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
-                print(line)
-                sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
                 for i, item in enumerate(line.split()):
-                    reading = item.split(':')[1]
-                    sensor_dictionary[sensors[i]] = reading
-                print('wahoo, returning data!', time.time())
-                sys.stdout.flush() # to avoid buffering, needed for websocketd
+                    sensor_dictionary[sensors[i]] = item.split(':')[1]
                 return sensor_dictionary
-
-
-
-def read_sensor_data(expected_sensors, timeout):
-    """This function reads serial data from an Arduino Uno.
-       The Arduino receives data from a number of sensors, including
-       temerature, humidity, water level, and water flow rate.
-       Future additions will likely include PH and EC"""
-
-    """To find port
-        1. Before plugging in Arduino, run command: sudo ls /dev/tty*
-        2. Plugin Arduino and run command above.
-        3. Identify which tty was added, write that one as the port below"""
-
-    if 'linux' in platform:
-        port = '/dev/ttyACM0'
-    else:
-        ##For when I am testing arduino on Windows
-        port = "COM3"
-
-    baudrate = 9600
-    attempts = 3
-    for attempt in range(attempts):
-        with Serial(port=port
-                  , baudrate=baudrate
-                  , timeout=30
-                  , bytesize=serial.EIGHTBITS
-                  , parity=serial.PARITY_NONE
-                  , stopbits=serial.STOPBITS_ONE
-                  , xonxoff=0
-                  , rtscts=0) as Port:
-            sensor_dictionary = {expected_sensor : None for expected_sensor in expected_sensors}
-            try:
-                # Port.setDTR(False)
-                time.sleep(.1)
-                Port.reset_input_buffer()
-                ##Port.flushInput()
-                time.sleep(.1)
-
-                line = Port.readline().decode().strip()
-                print('Attempt:', attempt, line, line[-1], line[0])
-                lines_to_read = 10
-                lines_read = 0
-                while lines_read < lines_to_read:
-                    if line.count(':') == 4:
-                        sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
-                        for i, item in enumerate(line.split()):
-                            ##sensor  = item.split(':')[0]
-                            reading = item.split(':')[1]
-                            ##if sensor in expected_sensors:
-                            sensor_dictionary[sensors[i]] = reading
-                        print('wahoo, returning data!', time.time())
-                        ##Return dictionary of values upon sucessful retreival of data
-                        return sensor_dictionary
-                    else:
-                        print(line, lines_read * ":(")
-                        lines_read += 1
-                        Port.reset_input_buffer()
-                        Port.flushInput()
-                        time.sleep(6)
-                        line = Port.readline().decode().strip()
-
-            except serial.serialutil.SerialException:
-                print('Ran into a SerialException!')
-                # Port.setDTR(False)
-                Port.reset_input_buffer()
-                Port.flushInput()
-                Port.close()
-                time.sleep(1)
-
-    ##Return blank dict if we have not sucessfully retreived data
-    return {expected_sensor : None for expected_sensor in expected_sensors}
+        except UnicodeDecodeError:
+            continue
+    return sensor_dictionary
 
 
 
@@ -190,13 +98,18 @@ def create_plot(value, last_value, formatting):
 
 
 
+def send_message(payload, account_sid, messaging_service_sid, auth_token, number):
+    client = Client(account_sid, auth_token)
+    message = client.messages \
+        .create(
+             body=payload,
+             messaging_service_sid=messaging_service_sid,
+             to=number)
 
-
-
-##to do
-
-def send_text(message):
-    pass
+def manage_flow(flow, session_data):
+        if (pump.pump_state.title() == 'On') and (time() = session_data['pump_start'] > 20) and (flow < 50):
+            send_message(f'Pump flow is currently {flow}%', account_sid, messaging_service_sid, auth_token, number)
+        return    
 
 def log_data(data):
     pass

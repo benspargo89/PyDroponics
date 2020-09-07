@@ -20,25 +20,6 @@ pump = pump_control(4)
 app = Flask(__name__) 
 
 
-def fetch_data(Port, timeout):
-    Port.reset_input_buffer()
-    start = time.time()
-    sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
-    sensor_dictionary = {expected_sensor : None for expected_sensor in sensors}
-    while time.time() - start < timeout:
-        try:
-            line = Port.readline().decode().strip()
-            print('line: ', line)
-            if line.count(':') == 4:
-                for i, item in enumerate(line.split()):
-                    sensor_dictionary[sensors[i]] = item.split(':')[1]
-                return sensor_dictionary
-        except UnicodeDecodeError:
-            continue # decode error - keep calm and carry on
-    return sensor_dictionary
-
-
-
 
 @app.route("/")
 def index():
