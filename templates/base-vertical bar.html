@@ -23,18 +23,18 @@
                     align-items: center;
                     justify-content: center;}
 
-        .right {width: 792px; 
-                height: 394;}
-        .left {width: 792px; 
-               height: 50;}
-        .small {height: 189px;
-                width: 384px;
+        .right {width: 678px; 
+                height: 460px;}
+        .left {width: 75px; 
+               height: 460px;}
+        .small {height: 218px;
+                flex-grow: 1;
                 margin: 2px}
-        .top {height: 50px;
-                width: 72px;
+        .top {height: 60px;
+                flex-grow: 1;
                 margin: 2px}
-        .bottom {height: 50px;
-                width: 695px;
+        .bottom {height: 376px;
+                flex-grow: 1;
                 margin: 2px}
         .break {display: flex;
                 flex-basis: 100%;
@@ -74,9 +74,9 @@
   <div class="container top">
       <button type="button" id="toggle" <i class="fa fa-shower fa-2x" id="shower-icon"></i></button>
   </div>
-<!--   <div class='break'></div> -->
+  <div class='break'></div>
    <div class="container bottom">
-
+      <input type="range" id="slider" class="ham" value="050" min="0" max="100" step="10" orient="vertical"/>
   </div>
 
 
