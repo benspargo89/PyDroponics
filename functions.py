@@ -113,6 +113,8 @@ def manage_flow(flow, session_data, pump):
     session_data['flow_record'].append(flow)
     if time() - session_data['pump_start'] > 75:     
         average_flow = round(sum(session_data ['flow_record']) / len(session_data ['flow_record']), 2)
+    else:
+        average_flow = 100
     if (pump.pump_state.title() == 'On') and (time() - session_data['pump_start'] > 75) and (flow < 25):
         send_message(f'Current Flow - Pump flow is currently running at {round(flow,2)}%. Average rate is {average_flow}', account_sid, messaging_service_sid, auth_token, number)
         print('\n*****SENDING MESSAGE*****\n')
