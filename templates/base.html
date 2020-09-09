@@ -46,21 +46,61 @@
              background-color:black;
              border-color:black;}
 
-        input[type=range][orient=vertical]
-            {
-                /*writing-mode: bt-lr;  IE */
-                -webkit-appearance: slider-vertical; /* WebKit */
-                width: 20px;
-                height: 350px;
-                padding: 0 5px;
-/*                color: green;*/
-                background-color: 'green';
-                /*background: linear-gradient(to right, #82CFD0 0%, #82CFD0 50%, #fff 50%, #fff 100%);*/
+        .slidecontainer {
+          width: 100%;
+          margin:0 auto;
+        }
 
-            }
+        .slider {
+          -webkit-appearance: none;
+          position:relative;
+           left:2%;
+          width: 96%;
+          height: 15px;
+          border-radius: 5px;
+          background: #d3d3d3;
+          outline: none;
+          opacity: 0.7;
+          -webkit-transition: .2s;
+          transition: opacity .2s;
+        }
 
-        .ham
-          {color: 'green';}
+        .slider:hover {
+          opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          background: #4CAF50;
+          cursor: pointer;
+
+        }
+
+        .slider::-moz-range-thumb {
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          background: #4CAF50;
+          cursor: pointer;
+        }
+
+
+}
+
+
+   /*     .slider::-webkit-slider-thumb {
+          width: 100%;
+          height: 2px;
+          cursor: pointer;
+          background: yellow;
+          border: 0;
+        }*/
+
+
 
 
 
@@ -76,7 +116,9 @@
   </div>
 <!--   <div class='break'></div> -->
    <div class="container bottom">
-
+      <div class="slidecontainer">
+  <input type="range" min="0" max="100" value="50" step=10 class="slider" id="myRange">
+</div>
   </div>
 
 
@@ -178,6 +220,15 @@ for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "red";}
 <!-- function timeout() {setTimeout(function () {retrieve_data,timeout();}, 1000);}-->
 <!-- $(document).ready(function(){timeout}) -->
 $(document).ready(function(){setInterval(retrieve_data,15000);});
+
+
+var slider = document.getElementById("myRange");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+  output.innerHTML = this.value;
+}
 
 
 $(document).on('input change', '#slider', function() {
