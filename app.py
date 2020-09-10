@@ -1,4 +1,4 @@
-from flask import jsonify, render_template, Flask, Session
+from flask import jsonify, render_template, Flask, Session, request
 from serial import Serial
 from functions import *
 from secrets import *
@@ -20,7 +20,7 @@ session_data['level_layout'] = {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max"
 session_data['Port'] = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 session_data['pump_start'] = time()
 session_data['flow_record'] = deque([100 for _ in range(10)])
-session_data['Light_Control'] = PWMLED(pin=13, frequency=1000, inital_value =.8)
+session_data['Light_Control'] = PWMLED(pin=13, frequency=100, initial_value =.9)
 
 pump = pump_control(4)
 app = Flask(__name__)   
@@ -86,11 +86,16 @@ def toggle_pump():
     current_state = pump.pump_state.title()
     return jsonify(pump_state=current_state)
 
-@app.route("/adjust_lights")
-def adjust_light(level):
-    set_level = 1 - (level/100)
+@app.route("/adjust_lights", methods=['POST'])
+def adjust_light():
+    print('\n\n\n', request.form['Value'], '\n\n\n')
+    light_value = int(request.form['Value'])
+    if light_value != 100:
+        set_level = 1 - (light_value/100)
+    else:
+        set_level = 0
     session_data['Light_Control'].value = set_level
-    return set_level
+    return str(set_level)
 
 
 

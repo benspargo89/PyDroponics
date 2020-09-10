@@ -208,10 +208,24 @@
     }
 
     $('#toggle').click(pump_click);
+    let myElements = document.querySelectorAll(".fa");
+    for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "red";}
 
-let myElements = document.querySelectorAll(".fa");
 
-for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "red";}
+
+$(document).on('input change', '#myRange', function() {
+    var slider_data = $(this).val();  
+  
+
+    console.log(slider_data);
+    $.ajax({
+            url: '/adjust_lights',
+            data: {'Value': slider_data},
+            type: 'POST'})});
+
+
+
+
 
 
 
@@ -222,22 +236,9 @@ for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "red";}
 $(document).ready(function(){setInterval(retrieve_data,15000);});
 
 
-var slider = document.getElementById("myRange");
-var output = document.getElementById("demo");
-output.innerHTML = slider.value;
-
-slider.oninput = function() {
-  output.innerHTML = this.value;
-}
 
 
-$(document).on('input change', '#slider', function() {
-    $('#slider_value').html( $(this).val() );
-    var slier_data = $(this).val();
-    console.log(slider_data);
-    $.ajax({
-            url: '/adjust_lights',
-            data: slider_data,
-            type: 'POST'})});
+
+
 
   </script>
