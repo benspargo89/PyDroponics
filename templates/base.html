@@ -233,8 +233,11 @@ slider.oninput = function() {
 
 $(document).on('input change', '#slider', function() {
     $('#slider_value').html( $(this).val() );
-    var data = $(this).val();
-    console.log(data)
-});
+    var slier_data = $(this).val();
+    console.log(slider_data);
+    $.ajax({
+            url: '/adjust_lights',
+            data: slider_data,
+            type: 'POST'})});
 
   </script>

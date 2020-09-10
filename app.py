@@ -3,6 +3,7 @@ from serial import Serial
 from functions import *
 from secrets import *
 from time import sleep, time
+from gpiozero import PWMLED
 import json
 from collections import deque 
 
@@ -19,6 +20,7 @@ session_data['level_layout'] = {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max"
 session_data['Port'] = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 session_data['pump_start'] = time()
 session_data['flow_record'] = deque([100 for _ in range(10)])
+session_data['Light_Control'] = PWMLED(pin=13, frequency=1000, inital_value =.8)
 
 pump = pump_control(4)
 app = Flask(__name__)   
@@ -83,6 +85,12 @@ def toggle_pump():
     pump.toggle()
     current_state = pump.pump_state.title()
     return jsonify(pump_state=current_state)
+
+@app.route("/adjust_lights")
+def adjust_light(level):
+    set_level = 1 - (level/100)
+    session_data['Light_Control'].value = set_level
+    return set_level
 
 
 
