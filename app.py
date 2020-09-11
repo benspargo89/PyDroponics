@@ -96,8 +96,8 @@ def toggle_pump():
 @app.route("/update_calendar", methods=['POST'])
 def adjust_light():
     light_value = int(request.form['Value'])
-    if light_value != 233:
-        set_level = 235 - light_value
+    if light_value != 240:
+        set_level = 240 - light_value
     else:
         set_level = 0
     session_data['Light_Control'].set_PWM_dutycycle(session_data['Light_Pin'], set_level)
