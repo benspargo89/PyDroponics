@@ -63,6 +63,7 @@ class pump_control:
 
 
 def fetch_data(Port, timeout):
+    """Gread data from serial port"""
     Port.reset_input_buffer()
     start = time()
     sensors = ['Pulss', 'eTape', 'Humidity', 'Temperature']
@@ -82,6 +83,7 @@ def fetch_data(Port, timeout):
 
 
 def create_plot(value, last_value, formatting):
+    """Function to render gauges on main page"""
     data = [go.Indicator(
     domain = {'x': [0, 1], 'y': [0, 1]},
     value = value,
@@ -100,6 +102,7 @@ def create_plot(value, last_value, formatting):
 
 
 def send_message(payload, account_sid, messaging_service_sid, auth_token, number):
+    """Use Twilio API to send text message. SIDs, token, are stored in secrets.py file"""
     client = Client(account_sid, auth_token)
     message = client.messages \
         .create(
@@ -109,9 +112,10 @@ def send_message(payload, account_sid, messaging_service_sid, auth_token, number
 
 
 def manage_flow(flow, session_data, pump):
-    session_data['flow_record'].popleft()
-    session_data['flow_record'].append(flow)
+    """Manage the flow of the pump given the current flow"""
     if time() - session_data['pump_start'] > 75:     
+        session_data['flow_record'].popleft()
+        session_data['flow_record'].append(flow)
         average_flow = round(sum(session_data ['flow_record']) / len(session_data ['flow_record']), 2)
     else:
         average_flow = 100

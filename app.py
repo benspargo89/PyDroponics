@@ -26,6 +26,7 @@ session_data['flow_record'] = deque([100 for _ in range(10)])
 session_data['Light_Control'] = pigpio.pi()
 session_data['Light_Pin'] = 13
 session_data['Light_Control'].set_PWM_dutycycle(session_data['Light_Pin'], 200)
+session_data['Lighting_Calendar'] = read_calendar()
 
 
 pump = pump_control(4)
@@ -92,7 +93,7 @@ def toggle_pump():
     return jsonify(pump_state=current_state)
 
 
-@app.route("/adjust_lights", methods=['POST'])
+@app.route("/update_calendar", methods=['POST'])
 def adjust_light():
     light_value = int(request.form['Value'])
     if light_value != 233:
@@ -103,4 +104,10 @@ def adjust_light():
     return str(set_level)
 
 
+@app.route("/update_calendar", methods=['POST'])
+def update_calendar():
+    # light_value = int(request.form['Value'])
+    """Need to add call to get calendar from ajax"""
+    write_calendar(calendar)
+    session_data['Lighting_Calendar'] = read_calendar()
 
