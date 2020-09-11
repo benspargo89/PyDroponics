@@ -4,10 +4,11 @@ from functions import *
 from secrets import *
 from time import sleep, time
 from gpiozero import PWMLED
-##Rember to run sudo pigpiod##
-import pigpio
 import json
 from collections import deque 
+##Rember to run sudo pigpiod##
+import pigpio
+
 
 session_data = Session()
 session_data['last_temp'] = 0
@@ -22,13 +23,14 @@ session_data['level_layout'] = {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max"
 session_data['Port'] = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 session_data['pump_start'] = time()
 session_data['flow_record'] = deque([100 for _ in range(10)])
-##session_data['Light_Control'] = PWMLED(pin=13, frequency=1000, initial_value =.9)
 session_data['Light_Control'] = pigpio.pi()
 session_data['Light_Pin'] = 13
 session_data['Light_Control'].set_PWM_dutycycle(session_data['Light_Pin'], 200)
 
+
 pump = pump_control(4)
 app = Flask(__name__)   
+
 
 @app.route("/")
 def index():
@@ -47,7 +49,6 @@ def index():
     session_data['last_flow'] = flow
     session_data['last_level'] = level
     current_state = pump.pump_state.title()
-    print('rendering for the first time')
     return render_template("base.html"
                     , temp_chart=temp_chart
                     , flow_chart=flow_chart
@@ -55,14 +56,11 @@ def index():
                     , level_chart=level_chart
                     , chart_layout=session_data['chart_layout']
                     , pump_state=current_state)
-
     
 
 @app.route("/sensor_data")
 def sensor_data():
-    print('hey!')
     sensor_data = fetch_data(session_data['Port'], 10)
-    print(sensor_data, '\n')
     temp = float(sensor_data['Temperature'][:-2])
     humidity = float(sensor_data['Humidity'][:-1])
     flow = float(sensor_data['Pulss']) / 51 * 100
@@ -89,11 +87,13 @@ def sensor_data():
 def toggle_pump():
     pump.toggle()
     current_state = pump.pump_state.title()
+    if current_state == 'on':
+        session_data['pump_start'] = time()
     return jsonify(pump_state=current_state)
+
 
 @app.route("/adjust_lights", methods=['POST'])
 def adjust_light():
-    print('\n\n\n', request.form['Value'], '\n\n\n')
     light_value = int(request.form['Value'])
     if light_value != 233:
         set_level = 235 - light_value
