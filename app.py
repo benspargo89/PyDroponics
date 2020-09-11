@@ -4,6 +4,8 @@ from functions import *
 from secrets import *
 from time import sleep, time
 from gpiozero import PWMLED
+##Rember to run sudo pigpiod##
+import pigpio
 import json
 from collections import deque 
 
@@ -20,7 +22,10 @@ session_data['level_layout'] = {"Title":'Tank Level', "Gauge_Min":0, "Gauge_Max"
 session_data['Port'] = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 session_data['pump_start'] = time()
 session_data['flow_record'] = deque([100 for _ in range(10)])
-session_data['Light_Control'] = PWMLED(pin=13, frequency=100, initial_value =.9)
+##session_data['Light_Control'] = PWMLED(pin=13, frequency=1000, initial_value =.9)
+session_data['Light_Control'] = pigpio.pi()
+session_data['Light_Pin'] = 13
+session_data['Light_Control'].set_PWM_dutycycle(session_data['Light_Pin'], 200)
 
 pump = pump_control(4)
 app = Flask(__name__)   
@@ -90,11 +95,11 @@ def toggle_pump():
 def adjust_light():
     print('\n\n\n', request.form['Value'], '\n\n\n')
     light_value = int(request.form['Value'])
-    if light_value != 100:
-        set_level = 1 - (light_value/100)
+    if light_value != 233:
+        set_level = 235 - light_value
     else:
         set_level = 0
-    session_data['Light_Control'].value = set_level
+    session_data['Light_Control'].set_PWM_dutycycle(session_data['Light_Pin'], set_level)
     return str(set_level)
 
 
