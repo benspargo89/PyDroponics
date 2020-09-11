@@ -93,7 +93,7 @@ def toggle_pump():
     return jsonify(pump_state=current_state)
 
 
-@app.route("/update_calendar", methods=['POST'])
+@app.route("/adjust_lights", methods=['POST'])
 def adjust_light():
     light_value = int(request.form['Value'])
     if light_value != 240:
