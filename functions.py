@@ -131,6 +131,17 @@ def manage_flow(flow, session_data, pump):
     return  
 
 
+def write_calendar(calendar):
+    """write calendar dictionary to JSON"""
+    with open('calendar.json', 'w+') as file:
+        file.write(json.dumps(calendar))
+
+def read_calendar():
+    """Read calendar dictionary from JSON"""
+    with open('calendar.json') as file:
+        calendar = json.loads(file.read())
+        return calendar
+
 ##ToDo
 def log_data(data):
     pass
