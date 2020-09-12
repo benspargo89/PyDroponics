@@ -1,7 +1,7 @@
 import json
 
 
-calendar = {8: 100, 9: 120, 10:200}
+
 def write_calendar(calendar):
 	"""write calendar dictionary to JSON"""
 	with open('calendar.json', 'w+') as file:
@@ -15,4 +15,4 @@ def read_calendar():
 
 
 """Write default calendar to file"""
-write_calendar({i:100 for i in range(7,23)})
+# write_calendar({i:100 for i in range(7,23)})
