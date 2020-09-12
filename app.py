@@ -90,6 +90,8 @@ def toggle_pump():
     current_state = pump.pump_state.title()
     if current_state == 'on':
         session_data['pump_start'] = time()
+    else:
+        session_data['flow_record'] = deque([100 for _ in range(10)])
     return jsonify(pump_state=current_state)
 
 

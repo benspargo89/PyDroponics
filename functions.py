@@ -113,7 +113,7 @@ def send_message(payload, account_sid, messaging_service_sid, auth_token, number
 
 def manage_flow(flow, session_data, pump):
     """Manage the flow of the pump given the current flow"""
-    if time() - session_data['pump_start'] > 75:     
+    if (time() - session_data['pump_start'] > 75) and (pump.pump_state.title() == 'On'):     
         session_data['flow_record'].popleft()
         session_data['flow_record'].append(flow)
         average_flow = round(sum(session_data ['flow_record']) / len(session_data ['flow_record']), 2)
