@@ -82,6 +82,8 @@ def sensor_data():
     session_data['last_humidity'] = humidity
     session_data['last_flow'] = flow
     session_data['last_level'] = level
+    if session_data['Calendar_Enabled']:
+        session_data['Light_Control'].set_PWM_dutycycle(session_data['Light_Pin'], calendar_light()) 
     return payload
 
 

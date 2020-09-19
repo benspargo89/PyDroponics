@@ -142,6 +142,13 @@ def read_calendar():
         calendar = json.loads(file.read())
         return calendar
 
+def hour():
+    return int(time.strftime('%H'))
+
+def calendar_light():
+    return read_calendar()[hour()]
+
+
 ##ToDo
 def log_data(data):
     pass
