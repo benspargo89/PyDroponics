@@ -211,15 +211,15 @@
 
     function calendar_status(data) {
       var state = data.calendar_state
-      let myElements = document.querySelectorAll(".fa-calendar");
+      let myElements2 = document.querySelectorAll(".fa-calendar");
       console.log(state)
-      if (state == "On"){for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "green";}}
-      else {for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "red";}}
+      if (state == "On"){for (let i = 0; i < myElements2.length; i++) {myElements2[i].style.color = "green";}}
+      else {for (let i = 0; i < myElements2.length; i++) {myElements2[i].style.color = "red";}}
     }
 
     $('#calendar').click(calendar_click);
-    let myElements = document.querySelectorAll(".fa-calendar");
-    for (let i = 0; i < myElements.length; i++) {myElements[i].style.color = "red";}
+    let myElements2 = document.querySelectorAll(".fa-calendar");
+    for (let i = 0; i < myElements2.length; i++) {myElements2[i].style.color = "red";}
 
 
 
