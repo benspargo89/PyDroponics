@@ -1,7 +1,7 @@
 from gpiozero import LED
 from serial import Serial
 import serial
-from time import time, sleep
+from time import time, sleep, strftime
 import plotly
 # import plotly.graph_objs as go
 import plotly.graph_objects as go
@@ -143,7 +143,7 @@ def read_calendar():
         return calendar
 
 def hour():
-    return int(time.strftime('%H'))
+    return str(int(strftime('%H')))
 
 def calendar_light():
     return read_calendar()[hour()]

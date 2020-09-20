@@ -15,4 +15,4 @@ def read_calendar():
 
 
 """Write default calendar to file"""
-# write_calendar({i:100 for i in range(7,23)})
+write_calendar({i:100 for i in range(1,25)})
